@@ -7,6 +7,7 @@ import { LocalRouteParamsContext } from './Route';
 import { INTERNAL_SLOT_NAME } from './constants';
 import { store, useRouteInfo } from './global-state/router-store';
 import { router, Router } from './imperative-api';
+import { usePreviewInfo } from './link/preview/PreviewRouteContext';
 import { RouteParams, RouteSegments, UnknownOutputParams, Route } from './types';
 
 export { useRouteInfo };
@@ -188,7 +189,8 @@ export function useGlobalSearchParams<
   TParams extends UnknownOutputParams = UnknownOutputParams,
 >(): RouteParams<TRoute> & TParams;
 export function useGlobalSearchParams() {
-  return useRouteInfo().params;
+  const globalParams = useRouteInfo().params;
+  return globalParams;
 }
 
 /**
@@ -232,8 +234,9 @@ export function useLocalSearchParams<
 >(): RouteParams<TRoute> & TParams;
 export function useLocalSearchParams() {
   const params = React.use(LocalRouteParamsContext) ?? {};
+  const { params: previewParams } = usePreviewInfo();
   return Object.fromEntries(
-    Object.entries(params).map(([key, value]) => {
+    Object.entries(previewParams ?? params).map(([key, value]) => {
       // React Navigation doesn't remove "undefined" values from the params object, and you cannot remove them via
       // navigation.setParams as it shallow merges. Hence, we hide them here
       if (value === undefined) {
