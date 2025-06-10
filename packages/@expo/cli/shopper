@@ -1,0 +1,4 @@
+expo init MyShoppingApp
+cd MyShoppingApp
+npm install tailwindcss-react-native tailwindcss
+npx tailwindcss init
